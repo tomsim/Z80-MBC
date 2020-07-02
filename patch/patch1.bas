@@ -4,11 +4,12 @@
 7 WADD=6 : WDATA=0: WADD1=0
 9 REM I was going to "TSR" but vector at 0005 gets reset on warm boot so
 10 ATOP=&HFD90
+20 IF PEEK(&HFBA5)<>&H11 OR PEEK(&HFB44)<>2 OR PEEK(&HFB97)<>2 THEN 6000
+25 WADD=&HFBA6: GOSUB 1000: OLDDP=WDATA
+30 IF OLDDP<>64051! THEN GOTO 6000
 115 REM set NDISKS
 120 POKE &HFB44,4
 125 POKE &HFB97,4
-130 REM get old dpbase
-140 WADD=&HFBA6: GOSUB 1000: OLDDP=WDATA
 145 PRINT "Old DPBASE=";HEX$(OLDDP)
 150 REM set up all 4 DBH - Copy DPH0 one time, then copy DPH1 3x and patch
 160 WADD=OLDDP: WADD1=ATOP+3: GOSUB 2000
@@ -20,7 +21,8 @@
 215 REM 32 is actually one too large
 220 WDATA=ATOP+68+32: WADD=ATOP+65:GOSUB 1050
 222 WADD=&HFBA6: WDATA=ATOP+3: GOSUB 1050 : REM set new DPBASE
-225 GOSUB 5000
+224 REM uncomment next line for diagnostics
+225 REM gosub 5000
 230 PRINT "Patch Complete! Good luck!"
 240 SYSTEM
 1000 REM peekw: read word at address wadd to wdata
@@ -49,3 +51,7 @@
 5020 WADD=ATOP+I: WDATA=PEEK(WADD): PRINT "@";HEX$(WADD);":";HEX$(WDATA)
 5025 NEXT I
 5030 RETURN
+6000 PRINT "Error! Version mismatch or already patched. Cowardly not patching."
+6010 STOP
+
+
