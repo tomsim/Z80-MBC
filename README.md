@@ -38,8 +38,10 @@ If you are unsure, you can squeeze the ICs so the pins will grip the main EEPROM
 
 Note: You won't see the drives until you patch the BIOS (see PATCH1.BAS or one of the other patch methods) or use a rebuilt BIOS.
 
+You don't need the patch if you are willing to load a new CP/M System + Bios. To do this, load newcpm/CPM22-4D0.hex using iDisk just like any other disk image.
+Note: This is just the system tracks, so you should not bother your data plus you must have an already formatted A disk to do this. If you want to rebuild the 
+BIOS using TASM, note that you have to build CPM22 and that file includes the BIOS. You can't build only the BIOS.
 
-Coming soon... rebuild BIOS for 4 drives
 
 If you are interested in PCPUT and PCGET using this firmware, see this document: https://docs.google.com/document/d/1xUM6nIeuzou1vhWvedSDNuM72x5ku1T-htuIr2hJKac/edit?usp=sharing 
 Note that changing the INO file is not needed in this case if you are using the one in this repo.
