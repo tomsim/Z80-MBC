@@ -1,15 +1,18 @@
+list
 1 REM Patch MPC-Z80 CP/M 2.2 For 4 disk drives
 2 REM Al Williams - Hackaday
 5 REM config (we could use as little as 3+16*3+31*2=113 bytes
 7 WADD=6 : WDATA=0: WADD1=0
 9 REM I was going to "TSR" but vector at 0005 gets reset on warm boot so
-10 ATOP=&HFD90
-20 IF PEEK(&HFBA5)<>&H11 OR PEEK(&HFB44)<>2 OR PEEK(&HFB97)<>2 THEN 6000
-25 WADD=&HFBA6: GOSUB 1000: OLDDP=WDATA
+10 ATOP=&HFD90 : REM Unused memory for patch
+14 REM OLDDPA = LXI instruction for DPA, N1, N2 = references to 2 drives
+15 OLDDPA=&HFBA5 : N1=&HFB44 : N2= &HFB97 
+20 IF PEEK(OLDDPA)<>&H11 OR PEEK(N1)<>2 OR PEEK(N2)<>2 THEN GOTO 6000
+25 WADD=OLDDPA+1:GOSUB 1000: OLDDP=WDATA
 30 IF OLDDP<>64051! THEN GOTO 6000
 115 REM set NDISKS
-120 POKE &HFB44,4
-125 POKE &HFB97,4
+120 POKE N1,4
+125 POKE N2,4
 145 PRINT "Old DPBASE=";HEX$(OLDDP)
 150 REM set up all 4 DBH - Copy DPH0 one time, then copy DPH1 3x and patch
 160 WADD=OLDDP: WADD1=ATOP+3: GOSUB 2000
@@ -20,7 +23,7 @@
 210 WDATA=ATOP+68: WADD=ATOP+49: GOSUB 1050
 215 REM 32 is actually one too large
 220 WDATA=ATOP+68+32: WADD=ATOP+65:GOSUB 1050
-222 WADD=&HFBA6: WDATA=ATOP+3: GOSUB 1050 : REM set new DPBASE
+222 WADD=OLDDPA+1: WDATA=ATOP+3: GOSUB 1050 : REM Set new DPBASE
 224 REM uncomment next line for diagnostics
 225 REM gosub 5000
 230 PRINT "Patch Complete! Good luck!"
@@ -53,5 +56,3 @@
 5030 RETURN
 6000 PRINT "Error! Version mismatch or already patched. Cowardly not patching."
 6010 STOP
-
-
