@@ -1,0 +1,38 @@
+Things to know:
+
+1) To load a disk image:
+  - Boot while holding user
+  - Select iLoad
+  - Load iDisk4.hex
+  - Follow prompts to send HEX files
+  - Easiest to set small delays on terminal character/line and paste into terminal for both hex files
+
+2) To prepare iLoad Hex files from C program:
+  sdcc -mz80 xxx.c -o xxx.hex
+
+3) To prepare CP/M com file with z88dk:
+  zcc +cpm -lm -o xxx.com xxx.c
+
+4) To build ASM hex images:
+  wine tasm xxx.asm
+
+5) To rebase hex file to 0 (for system track init using iDisk4):
+  srec_cat xxx.obj --intel --offset -0xNNNN -o xxx0.hex --intel
+  (where NNNN is you start address)
+
+6) To dump a disk from CP/M
+  - Run dumpdisk.com supply drive # on command line (0-3)
+  - When prompted start your terminal capture and press Enter
+  - When done, turn off capture
+  - Open capture file in editor and split marked sections
+  - Note: First record tells you the disk and can be changed:
+      - :00000009F7 - Drive 0
+      - :00000109F6 - Drive 1
+      - :00000209F5 - Drive 2
+      - :00000309F4 - Drive 3
+  - You can reload those images using procedure #1 above
+  
+7) To XMODEM files to/from box
+   - pcput filename.ext
+   - pcget filename.ext
+
