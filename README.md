@@ -13,7 +13,8 @@ The PCB gerber files are here: https://github.com/WestfW/4chipZ80 (the PCB was d
 
 New version S221116_R100218_Z80.ino. Fix the "ghost RTC" bug: when there isn't any Virtual Disk (only Basic and Forth) the RTC clock was always incorrectly found (More info here: https://hackaday.io/project/19000/log/89392-bug-fix-the-ghost-rtc).
 
-=== GNR version ===
+GNR version
+===========
 These are my changes:
 1) Slight reorganization of init code
 2) Change of address for I/O board (https://smile.amazon.com/gp/product/B07P2H1NZG)
@@ -46,7 +47,8 @@ BIOS using TASM, note that you have to build CPM22 and that file includes the BI
 If you are interested in PCPUT and PCGET using this firmware, see this document: https://docs.google.com/document/d/1xUM6nIeuzou1vhWvedSDNuM72x5ku1T-htuIr2hJKac/edit?usp=sharing 
 Note that changing the INO file is not needed in this case if you are using the one in this repo.
 
-=== GNR Files of interest: ===
+GNR Files of interest:
+======================
 * notes.txt - Notes about common operations (check out z88dk for compiling CP/M on host computer)
 * S221116_R080518_Z80.ino - Firmware including serial port patches and 4 disk support (NOTE: I/O port address and User button bit changes also)
 * newcpm/ - CP/M and BIOS built for 4 drives
