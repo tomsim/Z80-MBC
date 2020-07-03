@@ -24,15 +24,25 @@ These are my changes:
 really reflect the transmitter status, but I should probably fix that.
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
+
 a) Remove drive B
+
 b) Insert new EEPROM and power up board to iLoad mode
+
 c) Load iDisk
-d) Setup disk from a drive B image (e.g., the Turbo Pascal image from the disk pack)
+
+d) Setup disk from a drive B image (e.g., the Turbo Pascal image from the disk pack or the WordStar image)
+
 e) Remove drive B and repeat for the 4th EEPROM
+
 f) Power down 
+
 g) Replace original B drive
+
 h) Lift up pin 2 of each new EEPROM
+
 i) Using small piece of wire, short pin 2 to pin 3
+
 j) Piggyback the new EEPROMs over the old ones (one on top of each old EEPROM). Make sure pin 2 does not touch.
 
 If you are unsure, you can squeeze the ICs so the pins will grip the main EEPROMs pretty well and test. Once working you may want to solder them to each other. See this photo for how they press fit: https://photos.google.com/photo/AF1QipO3HcaTiTKJVTq6BJv_xK0qFeHDZbAKy3ra5OhA
