@@ -59,14 +59,76 @@ Note that changing the INO file is not needed in this case if you are using the 
 
 GNR Files of interest:
 ======================
-* notes.txt - Notes about common operations (check out z88dk for compiling CP/M on host computer)
-* S221116_R080518_Z80.ino - Firmware including serial port patches and 4 disk support (NOTE: I/O port address and User button bit changes also)
-* newcpm/ - CP/M and BIOS built for 4 drives
+* S221116_R040720_Z80.ino - Firmware including serial port patches and 4 disk support (NOTE: I/O port address and User button bit changes also)
+* newcpm/ - CP/M and BIOS built for 4 drives (also see CPM22SYS_BIOS_S050217_R040720.zip)
 * patch - Basic program to patch old BIOS for 4 drives (not needed with new cpm)
 * D1_WORDSTAR.ZIP - Wordstar installed for Drive B ready of iDisk. Eats up most of the disk, so 4 drives recommended!
-* idisk4.asm - iDisk patched for 4 drives
-* idisk4.hex - Image for idisk4
+* iDisk - S250317 R040720.c  - iDisk patched for 4 drives
+* iDisk - S250317.R040720.hex - Image for idisk4
 * getput/ - Patched versions of pcput and pcget for use with modified firmware (works with original CP/M Bios, but needs new Arduino firmware)
+
+How To
+======
+Things to know:
+
+1) To load a disk image:
+
+  - Boot while holding user
+  
+  - Select iLoad
+  
+  - Load iDisk4.hex
+  
+  - Follow prompts to send HEX files
+  
+  - Easiest to set small delays on terminal character/line and paste into terminal for both hex files
+
+2) To prepare iLoad Hex files from C program:
+
+  sdcc -mz80 xxx.c -o xxx.hex
+
+3) To prepare CP/M com file with z88dk:
+
+  zcc +cpm -lm -o xxx.com xxx.c
+
+4) To build ASM hex images:
+
+  wine tasm xxx.asm
+
+5) To rebase hex file to 0 (for system track init using iDisk4):
+
+  srec_cat xxx.obj --intel --offset -0xNNNN -o xxx0.hex --intel
+  
+  (where NNNN is you start address)
+
+6) To dump a disk from CP/M
+
+  - Run dumpdisk.com supply drive # on command line (0-3)
+  
+  - When prompted start your terminal capture and press Epnter
+  
+  - When done, turn off capture
+  
+  - Open capture file in editor and split marked sections
+  
+  - Note: First record tells you the disk and can be changed:
+  
+      - :00000009F7 - Drive 0
+	  
+      - :00000109F6 - Drive 1
+	  
+      - :00000209F5 - Drive 2
+	  
+      - :00000309F4 - Drive 3
+	  
+  - You can reload those images using procedure #1 above
+  
+7) To XMODEM files to/from box
+
+   - pcput filename.ext
+   
+   - pcget filename.ext
+
 
 
 

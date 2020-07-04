@@ -54,9 +54,14 @@
 					      maintain the 400KHz I2C rate. Note: "24LC" and "24AA" devices are only capable of 
                 400KHz operation.
 
+   S22116 R040720 Selective scanning of I2C
+   	  	  Support for 4 EEPROM disks (1025; requires rebuilt CPM/BIOS)
+		  Serial port changes to better fake SIO: Bit 0 of I/O read 0 is always 1
+		     Bit 1 is the serial data avalable flag (TODO: Make bit 0 reflect xmit buffer status)
+                  
    --------------------------------------------------------------------------------- */
 
-#define DISK4 1
+#define DISK4 1   // Set to 1 to allow 4 disks (requires OS support)
 
 // Selective I2C Scan by Al Williams
 #define SCAN_I2C 1
@@ -76,7 +81,7 @@
 // Hardware definitions for A041116 (Z80-MBC)
 //
 // ------------------------------------------------------------------------------
-#define VERSION "R080518gnr" // Define the version (release date) of this code
+#define VERSION "R040720" // Define the version (release date) of this code
 
 // For Z80 clock, use AVR clock divided by 2 or 4. Default is to use AVR_CLK/2
 #define Z80_CLK		8			// Z80 clock; use "4"/"8" or "5"/"10" (in MHz)
