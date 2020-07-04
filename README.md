@@ -45,7 +45,7 @@ i) Using small piece of wire, short pin 2 to pin 3
 
 j) Piggyback the new EEPROMs over the old ones (one on top of each old EEPROM). Make sure pin 2 does not touch.
 
-If you are unsure, you can squeeze the ICs so the pins will grip the main EEPROMs pretty well and test. Once working you may want to solder them to each other. See this photo for how they press fit: ![Piggyback DIPs](https://drive.google.com/file/d/1G_YWSm-YIfJ7HFxRcD5EgXIeHl-Vdnr_/view?usp=sharing)
+If you are unsure, you can squeeze the ICs so the pins will grip the main EEPROMs pretty well and test. Once working you may want to solder them to each other. See this photo for how they press fit: ![Piggyback DIPs](https://drive.google.com/file/d/1G_YWSm-YIfJ7HFxRcD5EgXIeHl-Vdnr_/view?usp=sharing) -- Apparently GitHub doesn't like Google links like this so: https://photos.google.com/photo/AF1QipO3HcaTiTKJVTq6BJv_xK0qFeHDZbAKy3ra5OhA
 
 Note: You won't see the drives until you patch the BIOS (see PATCH1.BAS or one of the other patch methods) or use the rebuilt CP/M image.
 
