@@ -45,7 +45,7 @@ i) Using small piece of wire, short pin 2 to pin 3
 
 j) Piggyback the new EEPROMs over the old ones (one on top of each old EEPROM). Make sure pin 2 does not touch.
 
-If you are unsure, you can squeeze the ICs so the pins will grip the main EEPROMs pretty well and test. Once working you may want to solder them to each other. See this photo for how they press fit: ![Piggyback DIPs](https://photos.google.com/photo/AF1QipO3HcaTiTKJVTq6BJv_xK0qFeHDZbAKy3ra5OhA)
+If you are unsure, you can squeeze the ICs so the pins will grip the main EEPROMs pretty well and test. Once working you may want to solder them to each other. See this photo for how they press fit: ![Piggyback DIPs](https://drive.google.com/file/d/1G_YWSm-YIfJ7HFxRcD5EgXIeHl-Vdnr_/view?usp=sharing)
 
 Note: You won't see the drives until you patch the BIOS (see PATCH1.BAS or one of the other patch methods) or use the rebuilt CP/M image.
 
@@ -72,11 +72,11 @@ How To
 Things to know:
 
 1) To load a disk image:
- * Boot while holding user
- * Select iLoad
- * Load iDisk4.hex
- * Follow prompts to send HEX files
- * Easiest to set small delays on terminal character/line and paste into terminal for both hex files
+   * Boot while holding user
+   * Select iLoad
+   * Load iDisk4.hex
+   * Follow prompts to send HEX files
+   * Easiest to set small delays on terminal character/line and paste into terminal for both hex files
 
 2) To prepare iLoad Hex files from C program:
 
@@ -97,22 +97,21 @@ Things to know:
   (where NNNN is you start address)
 
 6) To dump a disk from CP/M
-
- * Run dumpdisk.com supply drive # on command line (0-3)
- * When prompted start your terminal capture and press Epnter
- * When done, turn off capture
- * Open capture file in editor and split marked sections
- * Note: First record tells you the disk and can be changed:
-  * :00000009F7 - Drive 0
-  * :00000109F6 - Drive 1
-  * :00000209F5 - Drive 2
-  * :00000309F4 - Drive 3
-  * You can reload those images using procedure #1 above
+   * Run dumpdisk.com supply drive # on command line (0-3)
+   * When prompted start your terminal capture and press Epnter
+   * When done, turn off capture
+   * Open capture file in editor and split marked sections
+   * Note: First record tells you the disk and can be changed:
+     * :00000009F7 - Drive 0
+     * :00000109F6 - Drive 1
+     * :00000209F5 - Drive 2
+     * :00000309F4 - Drive 3
+     * You can reload those images using procedure #1 above
   
 7) To XMODEM files to/from box
 
- * pcput filename.ext
- * pcget filename.ext
+   * pcput filename.ext
+   * pcget filename.ext
 
 
 
