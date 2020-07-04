@@ -9,7 +9,7 @@ The PCB gerber files are here: https://github.com/WestfW/4chipZ80 (the PCB was d
 
 
 
-** UPDATE February 2018 **
+** UPDATE February 2018**
 
 New version S221116_R100218_Z80.ino. Fix the "ghost RTC" bug: when there isn't any Virtual Disk (only Basic and Forth) the RTC clock was always incorrectly found (More info here: https://hackaday.io/project/19000/log/89392-bug-fix-the-ghost-rtc).
 
@@ -20,7 +20,7 @@ These are my changes (July 4, 2020):
 2) Change of address for I/O board (https://smile.amazon.com/gp/product/B07P2H1NZG)
 3) Support for piggyback EEPROM (4 drives) in Arduino code
 4) Patcher to patch up existing BIOS to let CP/M use the 4 drives
-5) Serial input status on Input 0 -- note that the user switch is now bit 7. Also note bit 0 doesn't
+5) Serial input status on Input 0* note that the user switch is now bit 7. Also note bit 0 doesn't
 really reflect the transmitter status, but I should probably fix that.
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
@@ -72,11 +72,11 @@ How To
 Things to know:
 
 1) To load a disk image:
-  -- Boot while holding user
-  -- Select iLoad
-  -- Load iDisk4.hex
-  -- Follow prompts to send HEX files
-  -- Easiest to set small delays on terminal character/line and paste into terminal for both hex files
+ * Boot while holding user
+ * Select iLoad
+ * Load iDisk4.hex
+ * Follow prompts to send HEX files
+ * Easiest to set small delays on terminal character/line and paste into terminal for both hex files
 
 2) To prepare iLoad Hex files from C program:
 
@@ -92,27 +92,27 @@ Things to know:
 
 5) To rebase hex file to 0 (for system track init using iDisk4):
 
-  srec_cat xxx.obj --intel --offset -0xNNNN -o xxx0.hex --intel
+  srec_cat xxx.obj*intel*offset -0xNNNN -o xxx0.hex*intel
   
   (where NNNN is you start address)
 
 6) To dump a disk from CP/M
 
-  -- Run dumpdisk.com supply drive # on command line (0-3)
-  -- When prompted start your terminal capture and press Epnter
-  -- When done, turn off capture
-  -- Open capture file in editor and split marked sections
-  -- Note: First record tells you the disk and can be changed:
-      --- :00000009F7 - Drive 0
-      --- :00000109F6 - Drive 1
-      --- :00000209F5 - Drive 2
-      --- :00000309F4 - Drive 3
-  -- You can reload those images using procedure #1 above
+ * Run dumpdisk.com supply drive # on command line (0-3)
+ * When prompted start your terminal capture and press Epnter
+ * When done, turn off capture
+ * Open capture file in editor and split marked sections
+ * Note: First record tells you the disk and can be changed:
+  * :00000009F7 - Drive 0
+  * :00000109F6 - Drive 1
+  * :00000209F5 - Drive 2
+  * :00000309F4 - Drive 3
+  * You can reload those images using procedure #1 above
   
 7) To XMODEM files to/from box
 
-   -- pcput filename.ext
-   -- pcget filename.ext
+ * pcput filename.ext
+ * pcget filename.ext
 
 
 
