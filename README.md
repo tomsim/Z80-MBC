@@ -22,6 +22,7 @@ These are my changes (July 4, 2020):
 4) Patcher to patch up existing BIOS to let CP/M use the 4 drives
 5) Serial input status on Input 0* note that the user switch is now bit 7. Also note bit 0 doesn't
 really reflect the transmitter status, but I should probably fix that.
+6) idisk can now compile for CP/M or iLoad mode (compile with zcc -O1 -D_CPM idisk.c -o idisk.com
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
 
@@ -65,6 +66,9 @@ GNR Files of interest:
 * D1_WORDSTAR.ZIP - Wordstar installed for Drive B ready of iDisk. Eats up most of the disk, so 4 drives recommended!
 * iDisk - S250317 R040720.c  - iDisk patched for 4 drives
 * iDisk - S250317.R040720.hex - Image for idisk4
+* iDisk - S250317 R050720.c  - iDisk patched for 4 drives and compilable for use under CP/M; allows retarget of drives
+* iDisk - S250317.R050720.hex - Image for idisk4 (above)
+* idisk4.com - CP/M executable for above
 * getput/ - Patched versions of pcput and pcget for use with modified firmware (works with original CP/M Bios, but needs new Arduino firmware)
 * diskdump/ - Program to dump disk from CP/M (see How To, below)
 
