@@ -66,6 +66,7 @@ GNR Files of interest:
 * iDisk - S250317 R040720.c  - iDisk patched for 4 drives
 * iDisk - S250317.R040720.hex - Image for idisk4
 * getput/ - Patched versions of pcput and pcget for use with modified firmware (works with original CP/M Bios, but needs new Arduino firmware)
+* diskdump/ - Program to dump disk from CP/M (see How To, below)
 
 How To
 ======
