@@ -23,6 +23,8 @@ These are my changes (July 4, 2020):
 5) Serial input status on Input 0* note that the user switch is now bit 7. Also note bit 0 doesn't
 really reflect the transmitter status, but I should probably fix that.
 6) idisk can now compile for CP/M or iLoad mode (compile with zcc -O1 -D_CPM idisk.c -o idisk.com
+7) Added format program to format a disk (use S option to copy System from Drive A: to make a new system disk). Note: With the Format program you can skip
+all the iDisk steps for adding a 3rd and 4th drive. Just start at step H and after restart you can format your new drives. For example "format 2" to format a new drive C.
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
 
@@ -71,6 +73,8 @@ GNR Files of interest:
 * idisk4.com - CP/M executable for above
 * getput/ - Patched versions of pcput and pcget for use with modified firmware (works with original CP/M Bios, but needs new Arduino firmware)
 * diskdump/ - Program to dump disk from CP/M (see How To, below)
+* format.c - Source code for format program
+* format.com - Format binary (Format drive_number [S] where drive_number is 0 to 3; note that drive 0 has S option by default)
 
 How To
 ======

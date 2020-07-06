@@ -1,5 +1,8 @@
+// Al Williams Hackaday
 #include <stdio.h>
 #include <stdlib.h>
+
+// Specific for MPC Z80 -- does not use BIOS/BDOS calls but talks directly to IOS
 
 
 int main(int argc, char *argv[])
