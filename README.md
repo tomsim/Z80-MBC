@@ -25,6 +25,8 @@ really reflect the transmitter status, but I should probably fix that.
 6) idisk can now compile for CP/M or iLoad mode (compile with zcc -O1 -D_CPM idisk.c -o idisk.com
 7) Added format program to format a disk (use S option to copy System from Drive A: to make a new system disk). Note: With the Format program you can skip
 all the iDisk steps for adding a 3rd and 4th drive. Just start at step H and after restart you can format your new drives. For example "format 2" to format a new drive C.
+8) Added a menu item to swap drive A/D for testing new system disks. Note: If D is formatted as a system disk it won't be readable. When you swap, the old A disk will be at D
+   and also unreadable.
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
 
@@ -63,6 +65,7 @@ Note that changing the INO file is not needed in this case if you are using the 
 GNR Files of interest:
 ======================
 * S221116_R040720_Z80.ino - Firmware including serial port patches and 4 disk support (NOTE: I/O port address and User button bit changes also)
+* S221116_R050720_Z80.ino - Same as above but with option for swapping drive A/D
 * newcpm/ - CP/M and BIOS built for 4 drives (also see CPM22SYS_BIOS_S050217_R040720.zip)
 * patch - Basic program to patch old BIOS for 4 drives (not needed with new cpm)
 * D1_WORDSTAR.ZIP - Wordstar installed for Drive B ready of iDisk. Eats up most of the disk, so 4 drives recommended!
