@@ -102,13 +102,15 @@ Things to know:
 
 4) To build ASM hex images:
 
-  wine tasm xxx.asm
+  wine tasm [options] xxx.asm xxx.hex
+  
+  (Example: wine tasm -s -h -c -g0 -80 cpm22.asm cpm22.hex)
 
 5) To rebase hex file to 0 (for system track init using iDisk4):
 
-  srec_cat xxx.obj*intel*offset -0xNNNN -o xxx0.hex*intel
+  srec_cat xxx.obj intel offset -0xNNNN -o xxx0.hex intel
   
-  (where NNNN is you start address)
+  (where NNNN is your start address)
 
 6) To dump a disk from CP/M
    * Run dumpdisk.com supply drive # on command line (0-3)
