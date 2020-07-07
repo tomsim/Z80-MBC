@@ -15,7 +15,7 @@ New version S221116_R100218_Z80.ino. Fix the "ghost RTC" bug: when there isn't a
 
 GNR version
 ===========
-These are my changes (July 4, 2020):
+These are my changes (July 4-7, 2020):
 1) Slight reorganization of init code
 2) Change of address for I/O board (https://smile.amazon.com/gp/product/B07P2H1NZG)
 3) Support for piggyback EEPROM (4 drives) in Arduino code
@@ -23,10 +23,12 @@ These are my changes (July 4, 2020):
 5) Serial input status on Input 0* note that the user switch is now bit 7. Also note bit 0 doesn't
 really reflect the transmitter status, but I should probably fix that.
 6) idisk can now compile for CP/M or iLoad mode (compile with zcc -O1 -D_CPM idisk.c -o idisk.com
-7) Added format program to format a disk (use S option to copy System from Drive A: to make a new system disk). Note: With the Format program you can skip
+7) Added format program to format a disk (use /S option to copy System from Drive A: to make a new system disk). Note: With the Format program you can skip
 all the iDisk steps for adding a 3rd and 4th drive. Just start at step H and after restart you can format your new drives. For example "format 2" to format a new drive C.
 8) Added a menu item to swap drive A/D for testing new system disks. Note: If D is formatted as a system disk it won't be readable. When you swap, the old A disk will be at D
    and also unreadable.
+9) Added patchers to treat drive D a system disk or a data disk at run time (dsys or ddata). NOTE: This must be used with this CP/M image as it knows an exact address to patch and has no
+   checking. See How To below, for more.
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
 
@@ -125,7 +127,22 @@ Things to know:
    * pcput filename.ext
    * pcget filename.ext
 
+8) Experiment with an alternate boot disk
+   * Make sure drive D is empty or you don't care about it
+   * format 3 /s system2     (or whatever label you like)
+   * At this point, drive D will be unreadable because CP/M thinks it is a data format disk but it isn't
+   * Run dsys.com
+   * Now drive D will be readable
+   * Copy files over to drive D that you want on your new boot disk - This could include overwriting the system tracks with a new version of CP/M or other OS
+   * Reboot with User button down (requires R050720 Firmware)
+   * Select option to swap disk 0 and 3
+   * System will now boot off disk 3 which will be A
+   * Now drive 0 is D (was A) and is unreabled for the same reason
+   * Run dsys to be able to use drive 0 (as D:)
+   * Run ddata to restore drive D to using the data disk format
+   * Cold reboot (user button) to reverse the A/D swap
 
+Note: I may modify CP/M to understand that a C3 starts a boot disk and anything else (20, E5) is a data disk. Stay tuned.
 
 
 

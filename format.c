@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
       printf("Unknown disk drive\n");
       return 1;
     }
+  label[0]=(char)0;  // no label
   while (argc>argind)
     {
       if (argv[argind][0]=='/')
@@ -43,10 +44,11 @@ int main(int argc, char *argv[])
 	  }
 	}
       strcpy(label+1,argv[argind]);  // label name
+      label[0]=(char)0x20;  // disk label dir entry
       argind++;
     }
       
-  label[0]=(char)0x20;  // label marker for directory
+
   if (disknr==0) sysgen=1;
   if (sysgen)
     {
@@ -85,7 +87,7 @@ int main(int argc, char *argv[])
 	  for (i=0;i<128;i++)
 		{
 		  byte=0xE5;
-		  if ((sysgen && track==2) || (sysgen==0 && track==0))
+		  if (label[0] && ((sysgen && track==2) || (sysgen==0 && track==0)))
 		    {
 		      if (sector==1 && i<sizeof(label)) byte=label[i];
 		    }
