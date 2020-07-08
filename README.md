@@ -68,7 +68,7 @@ GNR Files of interest:
 ======================
 * S221116_R040720_Z80.ino - Firmware including serial port patches and 4 disk support (NOTE: I/O port address and User button bit changes also)
 * S221116_R050720_Z80.ino - Same as above but with option for swapping drive A/D
-* newcpm/ - CP/M and BIOS built for 4 drives (also see CPM22SYS_BIOS_S050217_R040720.zip)
+* newcpm/ - CP/M and BIOS built for 4 drives (also see CPM22SYS_BIOS_S050217_R040720.zip) : note R080720 adds several things (see below)
 * patch - Basic program to patch old BIOS for 4 drives (not needed with new cpm)
 * D1_WORDSTAR.ZIP - Wordstar installed for Drive B ready of iDisk. Eats up most of the disk, so 4 drives recommended!
 * iDisk - S250317 R040720.c  - iDisk patched for 4 drives
@@ -79,7 +79,12 @@ GNR Files of interest:
 * getput/ - Patched versions of pcput and pcget for use with modified firmware (works with original CP/M Bios, but needs new Arduino firmware)
 * diskdump/ - Program to dump disk from CP/M (see How To, below)
 * format.c - Source code for format program
-* format.com - Format binary (Format drive_number [S] where drive_number is 0 to 3; note that drive 0 has S option by default)
+* format.com - Format binary (Format drive_number [/S] [label] where drive_number is 0 to 3; note that drive 0 has S option by default)
+
+CP/M Changes:
+=============
+* R040720 - Added support for 4 drives
+* R080720 - Made drives removable, autodetect system drives vs data drives, removed sector translation table
 
 How To
 ======
@@ -128,23 +133,27 @@ Things to know:
 
    * pcput filename.ext
    * pcget filename.ext
+   
+8) Upgrade CP/M
+   * Use idisk4 or the idisk procedure (#1 above) to load a hex file from newcpm folder
 
-8) Experiment with an alternate boot disk
+9) Experiment with an alternate boot disk
    * Make sure drive D is empty or you don't care about it
    * format 3 /s system2     (or whatever label you like)
-   * At this point, drive D will be unreadable because CP/M thinks it is a data format disk but it isn't
-   * Run dsys.com
+   * At this point, drive D will be unreadable because CP/M thinks it is a data format disk but it isn't (unless using R080720 CP/M)
+   * Run dsys.com (ONLY IF USING R050720)
    * Now drive D will be readable
    * Copy files over to drive D that you want on your new boot disk - This could include overwriting the system tracks with a new version of CP/M or other OS
    * Reboot with User button down (requires R050720 Firmware)
    * Select option to swap disk 0 and 3
    * System will now boot off disk 3 which will be A
-   * Now drive 0 is D (was A) and is unreabled for the same reason
-   * Run dsys to be able to use drive 0 (as D:)
-   * Run ddata to restore drive D to using the data disk format
+   * Now drive 0 is D (was A) and is unreabled for the same reason (unless using R080720 CP/M)
+   * Run dsys to be able to use drive 0 (as D:)  (ONLY IF USING R050720)
+   * Run ddata to restore drive D to using the data disk format (ONLY IF USING R050720)
    * Cold reboot (user button) to reverse the A/D swap
+   * IMPORTANT: CP/M R080720 does NOT need dsys and ddata and you should NOT run them with any version except R050720. I will be moving these out of the main folders
+   
 
-Note: I may modify CP/M to understand that a C3 starts a boot disk and anything else (20, E5) is a data disk. Stay tuned.
 
 
 

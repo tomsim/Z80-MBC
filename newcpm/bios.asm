@@ -11,6 +11,8 @@
 ; S050217 R300417   Added AUTOEXEC.SUB execution after a cold boot 
 ;                   (Required IOS S221116 R300417 or newer);
 ;                   Fixed Bios jump table as originally intended
+;;                  AAW - Added support for 4 Drives
+;; 		    
 ;
 ;==============================================================================
 
@@ -77,42 +79,42 @@ SECTRN
 
 DPBASE
                ; DISK PARAMETER HEADER FOR DISK 00
-    .dw TRANTAB; Sector translation.
+    .dw $0000
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw DIRBF  ; Address of a 128-byte scratch pad area. All DPHs address the same scratch pad area.
     .dw DPB0   ; Address of a disk parameter block. Identical drives address the same disk parameter block.
-    .dw $0000  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
+    .dw CSV00  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
     .dw ALL00  ; Address of a scratch pad area for disk storage allocation information. Different for each DPH.
 
-               ; DISK PARAMETER HEADER FOR DISK 01
-    .dw TRANTAB; Sector translation.
+				; DISK PARAMETER HEADER FOR DISK 01
+    .dw $0000	
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw DIRBF  ; Address of a 128-byte scratch pad area. All DPHs address the same scratch pad area.
     .dw DPB1   ; Address of a disk parameter block. Identical drives address the same disk parameter block.
-    .dw $0000  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
+    .dw CSV01  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
     .dw ALL01  ; Address of a scratch pad area for disk storage allocation information. Different for each DPH.
 	;;  DPH 02
-    .dw TRANTAB; Sector translation.
+    .dw $0000
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw DIRBF  ; Address of a 128-byte scratch pad area. All DPHs address the same scratch pad area.
     .dw DPB1   ; Address of a disk parameter block. Identical drives address the same disk parameter block.
-    .dw $0000  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
+    .dw CSV02  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
     .dw ALL02  ; Address of a scratch pad area for disk storage allocation information. Different for each DPH.
 
 	;;  DPH 03
-    .dw TRANTAB; Sector translation.
+    .dw $0000
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw $0000  ; Scratch
     .dw DIRBF  ; Address of a 128-byte scratch pad area. All DPHs address the same scratch pad area.
     .dw DPB1   ; Address of a disk parameter block. Identical drives address the same disk parameter block.
-    .dw $0000  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
+    .dw CSV03  ; Address of a scratch pad area for check for changed disks. This address is different for each DPH.
     .dw ALL03  ; Address of a scratch pad area for disk storage allocation information. Different for each DPH.
 	
 DPB0           ; DISK PARAMETER BLOCK DISK 0
@@ -124,7 +126,7 @@ DPB0           ; DISK PARAMETER BLOCK DISK 0
     .DW 63     ; DIRECTORY MAX
     .DB 192    ; ALLOC 0
     .DB 0      ; ALLOC 1
-    .DW 0      ; CHECK SIZE (No check needed. So DPH address to scratch pad = $0000 too)
+    .DW 16      ; CHECK SIZE (# of dir entries +1)/4
     .DW 2      ; TRACK OFFSET
 
 DPB1           ; DISK PARAMETER BLOCK DISK 1
@@ -136,19 +138,9 @@ DPB1           ; DISK PARAMETER BLOCK DISK 1
     .DW 63     ; DIRECTORY MAX
     .DB 192    ; ALLOC 0
     .DB 0      ; ALLOC 1
-    .DW 0      ; CHECK SIZE (No check needed. So DPH address to scratch pad = $0000 too)
+    .DW 16      ; CHECK SIZE (# of dir entries +1)/4
     .DW 0      ; TRACK OFFSET
     
-; Sector translate vector
-TRANTAB 
-    .DB     1, 2, 3, 4      ; Sectors 1, 2, 3, 4
-    .DB     5, 6, 7, 8      ; Sectors 5, 6, 7, 6
-    .DB     9, 10, 11, 12   ; Sectors 9, 10, 11, 12
-    .DB     13, 14, 15, 16  ; Sectors 13, 14, 15, 16
-    .DB     17, 18, 19, 20  ; Sectors 17, 18, 19, 20
-    .DB     21, 22, 23, 24  ; Sectors 21, 22, 23, 24
-    .DB     25, 26, 27, 28  ; Sectors 25, 26, 27, 28
-    .DB     29, 30, 31, 32  ; Sectors 29, 30, 31, 32
 
 ; =========================================================================== ;
 ; BOOT                                                                        ;
@@ -436,6 +428,8 @@ HOME_
 ; and disk wear. The least significant bit of register E is zero if this is   ;
 ; the first occurrence of the drive select since the last cold or warm start. ;
 ; =========================================================================== ;
+	;; AAW note: there seems to be no evidence in the code that the register E thing is correct
+	;; But since we are flash based, it doesn't really matter
 SELDSK_
     ld      hl, $0000       ; HL = error code
     ld      a, c            ; A = drive number (0, 1)
@@ -451,6 +445,30 @@ SELDSK_
     add     hl, hl          ; 16 * HL = DPH displacement
     ld      de, DPBASE      ; DE = DPBASE
     add     hl, de          ; HL = DPBASE + (drive_number * 16)
+	;;  TODO - read track 0 sector 0 byte 0 and if C3 patch up DPH to point to DPB0 else point to DPB1
+	xor a
+	out ($0A), a
+	inc a
+	out ($0B), a
+	in a,($06)
+	push hl
+	ld de,$0a   		; point to DPB
+	add hl,de
+	cp $C3
+	jr  z,SELDISK_2
+	;; data disk
+	ld de,DPB1
+	jr SELDISK_3
+SELDISK_2
+	;;  system disk
+	ld de,DPB0
+SELDISK_3
+	ld (hl),e
+	inc hl
+	ld (hl),d
+	pop hl
+	ld a,(DSKNUM)
+	out ($09),a        	; reselect to clear pending read
     ret
 
 ; =========================================================================== ;
@@ -678,6 +696,15 @@ DMABUFF
     
 SECTCNT
     .block  1               ; Sectors counter for WBOOT
-
+	
+CSV00
+	.block 16
+CSV01
+	.block 16
+CSV02
+	.block 16
+CSV03
+	.block 16
+	
 
     .end

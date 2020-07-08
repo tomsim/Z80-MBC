@@ -1914,11 +1914,19 @@ TRKSEC4:POP HL      ;get track number (HL).
     SBC A,D
     LD  B,A
     LD  HL,(XLATE)  ;translate this sector according to this table.
+	;;  AAW - fix old bug to allow NULL SECTRAN entry
+    LD A,H
+    OR L
+    JP Z,NOXLAT  		; no translate
     EX  DE,HL
     CALL    SECTRN      ;let the bios translate it.
     LD  C,L
     LD  B,H
     JP  SETSEC      ;and select it.
+NOXLAT
+   INC BC
+   JP  SETSEC
+	
 ;
 ;   Compute block number from record number (SAVNREC) and
 ; extent number (SAVEXT).
