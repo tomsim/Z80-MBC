@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	  return 1;
 	  }
 	}
-      strcpy(label+1,argv[argind]);  // label name
+      strncpy(label+1,argv[argind],sizeof(label)-1);  // label name
       label[0]=(char)0x20;  // disk label dir entry
       argind++;
     }
