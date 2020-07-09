@@ -27,8 +27,9 @@ really reflect the transmitter status, but I should probably fix that.
 all the iDisk steps for adding a 3rd and 4th drive. Just start at step H and after restart you can format your new drives. For example "format 2" to format a new drive C.
 8) Added a menu item to swap drive A/D for testing new system disks. Note: If D is formatted as a system disk it won't be readable. When you swap, the old A disk will be at D
    and also unreadable.
-9) Added patchers to treat drive D a system disk or a data disk at run time (dsys or ddata). NOTE: This must be used with this CP/M image as it knows an exact address to patch and has no
+9) Added patchers to treat drive D a system disk or a data disk at run time (dsys or ddata). NOTE: This must be used with the matching CP/M image as it knows an exact address to patch and has no
    checking. See How To below, for more.
+10) Updated CP/M (R090720) for better drive change handling and to automatically search drive A (current user) for COM files not found on current disk   
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
 
@@ -68,7 +69,7 @@ GNR Files of interest:
 ======================
 * S221116_R040720_Z80.ino - Firmware including serial port patches and 4 disk support (NOTE: I/O port address and User button bit changes also)
 * S221116_R050720_Z80.ino - Same as above but with option for swapping drive A/D
-* newcpm/ - CP/M and BIOS built for 4 drives (also see CPM22SYS_BIOS_S050217_R040720.zip) : note R080720 adds several things (see below)
+* newcpm/ - CP/M and BIOS built for 4 drives (also see CPM22SYS_BIOS_S050217_R040720.zip) : note R080720 adds several things (see below) and R090720 makes further improvements
 * patch - Basic program to patch old BIOS for 4 drives (not needed with new cpm)
 * D1_WORDSTAR.ZIP - Wordstar installed for Drive B ready of iDisk. Eats up most of the disk, so 4 drives recommended!
 * iDisk - S250317 R040720.c  - iDisk patched for 4 drives
@@ -85,6 +86,7 @@ CP/M Changes:
 =============
 * R040720 - Added support for 4 drives
 * R080720 - Made drives removable, autodetect system drives vs data drives, removed sector translation table
+* R090720 - Improved drive change logic, search drive A (current user) if COM file not found on current drive 
 
 How To
 ======

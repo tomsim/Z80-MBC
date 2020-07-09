@@ -222,6 +222,10 @@ WBOOT_
     ld      sp, $80         ; Use space below buffer for stack 
     ld      hl, WbootMSG    ; Print a message
     call    puts
+	;;  AAW - Force SELDSK_ to reread parameters
+	ld a,0ffh
+	ld (DSKNUM),a   	; Any value >15 will force rescan
+	
     ld      c, 0            ; Select disk 0
     call    SELDSK_
     ld      a, 44           ; Initialize the sectors counter
@@ -435,7 +439,11 @@ SELDSK_
     ld      a, c            ; A = drive number (0, 1)
     cp      NDISKS          ; Drive number ok?
     ret     nc              ; No, illegal number. Return with error code (No Carry if >= NDISKS)
-    out     ($09), a        ; Yes, select it
+	out     ($09), a        ; Yes, select it
+	ld a,(DSKNUM)
+	cp c
+	PUSH AF
+	ld a,c
     ld      (DSKNUM), a     ; Save it
     ld      l, c            ; L = drive number
     ld      h, $00          ; HL = drive number (16 bit)
@@ -444,8 +452,13 @@ SELDSK_
     add     hl, hl          ; 8 * HL
     add     hl, hl          ; 16 * HL = DPH displacement
     ld      de, DPBASE      ; DE = DPBASE
-    add     hl, de          ; HL = DPBASE + (drive_number * 16)
-	;;  TODO - read track 0 sector 0 byte 0 and if C3 patch up DPH to point to DPB0 else point to DPB1
+	add     hl, de          ; HL = DPBASE + (drive_number * 16)
+	POP AF
+	RET Z  			; disk already selected so don't patch DPB
+	;; Note.. this could cause a problem if you swap disks to different sizes
+	;;  So you might have to switch "off" the disk then back on to correct this or
+	;;  do a Warm boot which you are supposed to do on a disk change anyway
+	;;  read track 0 sector 0 byte 0 and if C3 patch up DPH to point to DPB0 else point to DPB1
 	xor a
 	out ($0A), a
 	inc a

@@ -1104,7 +1104,7 @@ USER:   CALL    DECODE      ;get numeric value following command.
 UNKNOWN:CALL    VERIFY      ;check for valid system (why?).
     LD  A,(FCB+1)   ;anything to execute?
     CP  ' '
-    JP  NZ,UNKWN1
+    JR  NZ,UNKWN1
     LD  A,(CHGDRV)  ;nope, only a drive change?
     OR  A
     JP  Z,GETBACK1  ;neither???
@@ -1125,18 +1125,30 @@ UNKWN2: PUSH    DE
     POP DE
     LD  HL,COMFILE  ;set the extension to 'COM'.
     CALL    MOVE3
-    CALL    OPENFCB     ;and open this file.
-    JP  Z,UNKWN9    ;not present?
+	CALL    OPENFCB     ;and open this file.
+	 	JR NZ,FOUNDC	; Found
+	 	LD HL,CHGDRV	; See if drive specified 
+	 	OR (HL)		; 
+	 	JP NZ, UNKWN9	; Yes, so error
+	 	LD A,(CDRIVE)	; Check current drive
+	 	OR A
+	 	JP Z, UNKWN9    	; already on A, so error
+	 	INC (HL)	; We know (HL) was 0 so now it is 1 (drive A)
+	  	LD DE,FCB+9	; Reset DE
+	 	JR UNKWN2	; Try again 
+	
+	
 ;
 ;   Load in the program.
 ;
-    LD  HL,TBASE    ;store the program starting here.
+FOUNDC:	
+	LD  HL,TBASE    ;store the program starting here.
 UNKWN3: PUSH    HL
     EX  DE,HL
     CALL    DMASET      ;set transfer address.
     LD  DE,FCB      ;and read the next record.
     CALL    RDREC
-    JP  NZ,UNKWN4   ;end of file or read error?
+    JR  NZ,UNKWN4   ;end of file or read error?
     POP HL      ;nope, bump pointer for next sector.
     LD  DE,128
     ADD HL,DE
@@ -1146,7 +1158,7 @@ UNKWN3: PUSH    HL
     LD  A,H
     SBC A,D
     JP  NC,UNKWN0   ;no, it can't fit.
-    JP  UNKWN3
+    JR  UNKWN3
 ;
 ;   Get here after finished reading.
 ;
@@ -1173,11 +1185,11 @@ UNKWN4: POP HL
     LD  HL,INBUFF+2 ;now move the remainder of the input
 UNKWN5: LD  A,(HL)      ;line down to (0080h). Look for a non blank.
     OR  A       ;or a null.
-    JP  Z,UNKWN6
+    JR  Z,UNKWN6
     CP  ' '
-    JP  Z,UNKWN6
+    JR  Z,UNKWN6
     INC HL
-    JP  UNKWN5
+    JR  UNKWN5
 ;
 ;   Do the line move now. It ends in a null byte.
 ;
@@ -1186,11 +1198,11 @@ UNKWN6: LD  B,0     ;keep a character count.
 UNKWN7: LD  A,(HL)      ;move it now.
     LD  (DE),A
     OR  A
-    JP  Z,UNKWN8
+    JR  Z,UNKWN8
     INC B
     INC HL
     INC DE
-    JP  UNKWN7
+    JR  UNKWN7
 UNKWN8: LD  A,B     ;now store the character count.
     LD  (TBUFF),A
     CALL    CRLF        ;clean up the screen.
@@ -1254,11 +1266,13 @@ CHGDRV: .DB 0       ;change in drives flag (0=no change).
 NBYTES: .DW 0       ;byte counter used by TYPE.
 ;
 ;   Room for expansion?
-;
-    .DB 0,0,0,0,0,0,0,0,0,0,0,0,0
+
+	;;     .DB 0,0,0,0,0,0,0,0,0,0,0,0,0
+
+	.ORG $EC00  		; for Z80-MBC
 ;
 ;   Note that the following six bytes must match those at
-; (PATTRN1) or cp/m will HALT. Why?
+; (PATTRN1) or cp/m will HALT. Why? -- This MUST be at EC00 (with 64k bias)
 ;
 PATTRN2:.DB 0,22,0,0,0,0    ;(* serial number bytes *).
 ;
