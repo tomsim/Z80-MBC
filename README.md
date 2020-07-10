@@ -15,6 +15,11 @@ New version S221116_R100218_Z80.ino. Fix the "ghost RTC" bug: when there isn't a
 
 GNR version
 ===========
+Warning: There seems to be some problem on my system with Drive D. It was not a problem before, so either I have a hardware issue or some recent change has affected the system and 
+I am still running tests. You might want to stick to the older CP/M version: https://github.com/wd5gnr/Z80-MBC/blob/master/newcpm/old/CPM22SYS_BIOS_S050217_R040720.hex. I'll update here when fixed.
+In addition, the format command doesn't like not having a label, so that will be fixed, also.
+
+
 These are my changes (July 4-7, 2020):
 1) Slight reorganization of init code
 2) Change of address for I/O board (https://smile.amazon.com/gp/product/B07P2H1NZG)
