@@ -10,23 +10,29 @@ int main(int argc, char *argv[])
 {
   if (argc<2 || argc>4)
     {
-      printf("Usage: FORMAT DRIVE [LABEL] [/S] where DRIVE is 0-3\nUse /S to do a system generation using the current\ndrive 0 system tracks (default for drive 0)");
+      printf("Usage: FORMAT DRIVE [LABEL] [/S] where DRIVE is 0-3 or A-P\nUse /S to do a system generation using the current\ndrive 0 system tracks (default for drive 0)");
       return 1;
     }
   unsigned sysgen=0;
   unsigned char sys[2*32*128];  // 8k Buffer for system tracks
   unsigned sec=0;
   unsigned disknr=atoi(argv[1]);
+  char dletter=0;
   unsigned int track, c, sector, i, j;
   unsigned int percent=0;
   char label[13];
+  int writelabel=0;
   int argind=2;
-  if (disknr<0||disknr>3)
+  if (argv[1][0]>='a'&&argv[1][0]<='p') dletter=argv[1][0]-('a'-'A');
+  if (argv[1][0]>='A'&&argv[1][0]<='P') dletter=argv[1][0];
+  if (dletter)
+      disknr=dletter-'A';
+  if (disknr<0||disknr>15)
     {
       printf("Unknown disk drive\n");
       return 1;
     }
-  label[0]=(char)0;  // no label
+  label[0]=label[1]=(char)0;  // no label
   while (argc>argind)
     {
       if (argv[argind][0]=='/')
@@ -45,6 +51,7 @@ int main(int argc, char *argv[])
 	}
       strncpy(label+1,argv[argind],sizeof(label)-1);  // label name
       label[0]=(char)0x20;  // disk label dir entry
+      writelabel=1;
       argind++;
     }
       
@@ -65,9 +72,12 @@ int main(int argc, char *argv[])
 	    }
 	}
     }
-  printf("This will format drive %d (%c:) as volume %s and destroy all contents on the drive. Are you sure? ",disknr,'A'+disknr,label+1);
-  for (i=strlen(label);i<sizeof(label)-1;i++) label[i]=' '; // blank pad
-  label[sizeof(label)-1]=(char)1;  // not '1' but 1  -- label marker
+  printf("This will format drive %d (%c:) as volume %s and destroy all contents on the drive. Are you sure? ",disknr,'A'+disknr,writelabel?label+1:"<NONE>");
+  if (label[0]!=0)
+    {
+      for (i=strlen(label);i<sizeof(label)-1;i++) label[i]=' '; // blank pad
+      label[sizeof(label)-1]=(char)1;  // not '1' but 1  -- label marker
+    }
 
   do {
     c=getchar();
@@ -87,7 +97,7 @@ int main(int argc, char *argv[])
 	  for (i=0;i<128;i++)
 		{
 		  byte=0xE5;
-		  if (label[0] && ((sysgen && track==2) || (sysgen==0 && track==0)))
+		  if (writelabel!=0 && ((sysgen && track==2) || (sysgen==0 && track==0)))
 		    {
 		      if (sector==1 && i<sizeof(label)) byte=label[i];
 		    }

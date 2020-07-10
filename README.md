@@ -16,7 +16,7 @@ New version S221116_R100218_Z80.ino. Fix the "ghost RTC" bug: when there isn't a
 GNR version
 ===========
 
-These are my changes (July 4-7, 2020):
+These are my changes (July 4-9, 2020):
 1) Slight reorganization of init code
 2) Change of address for I/O board (https://smile.amazon.com/gp/product/B07P2H1NZG)
 3) Support for piggyback EEPROM (4 drives) in Arduino code
@@ -31,6 +31,7 @@ all the iDisk steps for adding a 3rd and 4th drive. Just start at step H and aft
 9) Added patchers to treat drive D a system disk or a data disk at run time (dsys or ddata). NOTE: This must be used with the matching CP/M image as it knows an exact address to patch and has no
    checking. See How To below, for more.
 10) Updated CP/M (R090720) for better drive change handling and to automatically search drive A (current user) for COM files not found on current disk   
+11) Updated CP/M (R100720) to allow search drive to change using PATH.COM (default A; can turn off search).
 
 To add the 3rd and 4th drives take new 1025 EEPROMs and do the following:
 
@@ -82,12 +83,15 @@ GNR Files of interest:
 * diskdump/ - Program to dump disk from CP/M (see How To, below)
 * format.c - Source code for format program
 * format.com - Format binary (Format drive_number [/S] [label] where drive_number is 0 to 3; note that drive 0 has S option by default)
+* tools/buildcpm - Script for helping to build CPM under Linux
+* path.com - Set Path for CPM R100720 or later (one drive; use @ to turn off search)
 
 CP/M Changes:
 =============
 * R040720 - Added support for 4 drives
 * R080720 - Made drives removable, autodetect system drives vs data drives, removed sector translation table
 * R090720 - Improved drive change logic, search drive A (current user) if COM file not found on current drive 
+* R100720 - PATH.COM can change search drive or turn off search; fixed a memory issue when adding lots of drives
 
 How To
 ======
@@ -156,10 +160,15 @@ Things to know:
    * Cold reboot (user button) to reverse the A/D swap
    * IMPORTANT: CP/M R080720 does NOT need dsys and ddata and you should NOT run them with any version except R050720. I will be moving these out of the main folders
    
+10) Stress test I2C bus
+   * Start with blank disk in D:
+   * pip d:=a:*.*
+   * Test the executables on D to ensure they work -- be sure to test several
+   * This appears to stress the bus enough to fail when less traffic will work
 
 Errata
 ======
-The format command doesn't like not having a label, so that will be fixed.
+   * None
 
 
 

@@ -1,0 +1,14 @@
+#!/bin/bash
+if wine tasm -s -h -c -g0 -80 CPM22.ASM CPM22-4D1.OBJ
+then
+if tail CPM22.LST | grep errors\ =\ 0 
+then
+    srec_cat CPM22-4D.OBJ --intel --offset -0xE400 -o CPM22-4D1-0.hex --intel
+    echo Done: CPM22-4D1-0.hex updated
+else
+    echo Error detected
+    grep ^[CBb].*line.*: CPM22.LST
+fi
+else
+   echo TASM Failed
+fi
